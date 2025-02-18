@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Channel</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="header">
+            <button class="button">Order</button>
+            <a href="#">
+                <button class="button">Channel</button>
+            </a>
+        </div>
+
+        <div class="logo-section">
+            <h1 class="heading" id="heading">Your Channel Name</h1>
+            <div class="profile-pic">
+                <img alt="Channel Profile" id="channelImageOnClient" src="your-image-url.jpg" />
+            </div>
+        </div>
+
+        <!-- Telegram Widget -->
+        <div style="height: 60vh; overflow-y: scroll;">
+            <div class="telegram-container widget-area">
+                <!-- Telegram Widget will be injected here -->
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; width: 100%; margin-top: 2rem;">
+            <button class="button">Whatsapp</button>
+        </div>
+    </div>
+
+    <div class="channel-preview" id="fallback" style="display: none;">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-460zRECuX9D15WGKzCKHwBhbmLpguu.png"
+            alt="Channel Profile" class="profile-image">
+        <div class="channel-name">🎒 PluggysHood 🎒</div>
+        <div class="subscriber-count">23 subscribers</div>
+        <div class="status-message">Kanal ist noch in Arbeit 🚨</div>
+        <div class="status-message">Channel is still in Progress 🚨</div>
+        <a href="#" class="telegram-button">VIEW IN TELEGRAM</a>
+        <div class="preview-text">Preview channel</div>
+    </div>
+
+    <script>
+        // Function to update the Telegram widget
+        function updateTelegramWidget(postId) {
+            const widgetContainer = document.querySelector(".telegram-container");
+            // widgetContainer.innerHTML = ""; // Clear the old widget
+
+            // Create a new script element for the Telegram widget
+            const script = document.createElement("script");
+            script.async = true;
+            script.src = "https://telegram.org/js/telegram-widget.js?22";
+            script.setAttribute("data-telegram-post", `thisonejsbot/${postId}`);
+            script.setAttribute("data-width", "100%");
+            script.setAttribute("data-color", "13B4C6");
+            script.setAttribute("data-dark", "1");
+            script.setAttribute("data-dark-color", "39C4E8");
+
+            // Append the script to the .telegram-container div
+            widgetContainer.appendChild(script);
+        }
+
+        // Function to fetch the latest post ID from the server
+        async function fetchLatestPostId() {
+            try {
+                const response = await fetch("/latest-post-id");
+                const data = await response.json();
+                if (data.postId) {
+                    updateTelegramWidget(data.postId);
+                }
+            } catch (error) {
+                console.error("Failed to fetch latest post ID:", error);
+            }
+        }
+
+        // Fetch the latest post ID every 5 seconds
+        setInterval(fetchLatestPostId, 5000);
+
+        // Initial fetch when the page loads
+        document.addEventListener("DOMContentLoaded", fetchLatestPostId);
+    </script>
+</body>
+
+</html>
